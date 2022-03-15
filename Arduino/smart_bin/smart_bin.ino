@@ -1,11 +1,6 @@
 /***********************************************************
-  File name: 19_ultrasonicDistanceSensor.ino
-  Description: When you move the ultrasonic distance sensor,
-             you will find LCD1602 display distance.
-  Website: www.adeept.com
-  E-mail: support@adeept.com
-  Author: Tom
-  Date: 2015/12/27
+  File name: smart_bin.ino
+  Description: Arduino code for the smart bin IoT project
 ***********************************************************/
 
 #include <Arduino.h>
