@@ -6,17 +6,17 @@ const Chart = ({name, data, xDataKey, yDataKey, stroke, fill}) => {
         <h1>{name}</h1>
         <div className="row">
 
-            <ResponsiveContainer width="99%" aspect={3}>
+            <ResponsiveContainer width="95%" aspect={3}>
                 <AreaChart
                     data={data}
                     className="areachart"
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
                     <XAxis dataKey={xDataKey}/>
-                    <YAxis/>
+                    <YAxis type="number" domain={[0, 100]} allowDataOverflow={true} />
                     <Tooltip/>
 
-                    <Area type="monotone" dataKey={yDataKey} stroke={stroke} fill={fill}/>
+                    <Area type="linear" dataKey={yDataKey} stroke={stroke} fill={fill}/>
                 </AreaChart>
             </ResponsiveContainer>
         </div>
