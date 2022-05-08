@@ -225,18 +225,30 @@ void loop()
   distance = distance / (float)n;       // Az analóg 0 csatornán mért érték (bit)
   Serial.println(distance);             // print measured value
 
+  if (distance>BIN_SIZE)
+  {
+    
+  }
+  
   percentage = 100.0-distance/BIN_SIZE*100.0;
+  if (percentage > 100) percentage = 100.0; 
+  if (percentage < 0) percentage = 0.0;
   Serial.println(percentage);           // print measured value
   
-  String displayString = "Tavolsag: " + String(distance) + " cm";
+  String displayString = "Distance: " + String(distance) + " cm";
+  String displayString2 = String(percentage) + "%";
   Serial.println(displayString);
   
   display.clearDisplay();
-  display.setTextSize(2);
+  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
   display.println(displayString);
-  drawProgressbar(0,40,120,10,percentage);
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(30, 25);
+  display.println(displayString2);
+  drawProgressbar(0,45,120,15,percentage);
   display.display();
   
   if (hasWifi)

@@ -21,7 +21,7 @@ const Dashboard = () => {
             percentage = payload.Percentage;
         })
     }, [])
-    if (data.length > 10) {
+    if (data.length > 20) {
         data.shift()
     }
 
