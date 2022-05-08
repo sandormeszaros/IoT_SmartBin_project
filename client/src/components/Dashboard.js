@@ -9,6 +9,7 @@ import Progressbar from './Progressbar'
 const socket = io('http://localhost:5000')
 
 let distance = 0.0;
+let percentage = 0.0;
 
 const Dashboard = () => {
     const [data, setData] = useState([])
@@ -17,7 +18,7 @@ const Dashboard = () => {
         socket.on('payload', payload => {
             setData(currentData => [...currentData, payload])
             distance = payload.Distance;
-            //humidity = payload.Humidity;
+            percentage = payload.Percentage;
         })
     }, [])
     if (data.length > 10) {
@@ -25,16 +26,16 @@ const Dashboard = () => {
     }
 
     return <div>
-        <h1 className="title">Azure Dashboard</h1>
+        <h1 className="title">Smart Bin Dashboard</h1>
          
         <div className="card-container">
             <Card name="Distance" icon="fas fa-trash fa-2x" value={distance}/>
         </div>
         <div className="progress-bar">
-            <Progressbar value={distance}/>
+            <Progressbar value={percentage}/>
         </div>
         <div className="chart-container">
-            <Chart name="Distance" data={data} xDataKey="date" yDataKey="Distance" stroke="#8884d8" fill="#8884d8"/>
+            <Chart name="Percentage" data={data} xDataKey="date" yDataKey="Percentage" stroke="#8884d8" fill="#8884d8"/>
         </div>
     </div>
 }

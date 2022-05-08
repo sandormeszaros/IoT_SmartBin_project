@@ -26,7 +26,9 @@
 #define OLED_CS    5
 #define OLED_RESET 17
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
-                         OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+                         OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS); 
+
+#define BIN_SIZE 100     // Size of bin in cm   
 
 /*** Global variables ***/
 // Please input the SSID and password of WiFi
@@ -36,7 +38,7 @@ const char* password = "2b3150c6";
 /*String containing Hostname, Device Id & Device Key in the format:                         */
 static const char* connectionString = "HostName=smart-bin-project.azure-devices.net;DeviceId=myESP32;SharedAccessKey=LbkztLp8nR0ZauWI5gFr4ICw1y/NesWYTAJwcOaBD1k=";
 
-const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Distance\":%f}";
+const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Distance\":%f, \"Percentage\":%f}";
 
 int messageCount = 1;
 static bool hasWifi = false;
@@ -49,6 +51,7 @@ const int trigPin  = 2;  // Trig Pin in the distance sensor
 static int n = 50;      // Samples
 
 float distance = 0;
+float percentage = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utilities
@@ -151,6 +154,15 @@ float microsecondsToCentimeters(float microseconds)
   return microseconds / 29.0 / 2.0;
 }
 
+void drawProgressbar(int x,int y, int width,int height, int progress)
+{
+   progress = progress > 100 ? 100 : progress; // set the progress value to 100
+   progress = progress < 0 ? 0 : progress; // start the counting to 0-100
+   float bar = ((float)(width-1) / 100) * progress;
+   display.drawRect(x, y, width, height, WHITE);
+   display.fillRect(x+2, y+2, bar , height-4, WHITE); // initailize the graphics fillRect(int x, int y, int width, int height)
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Arduino sketch
 void setup()
@@ -184,7 +196,7 @@ void setup()
   send_interval_ms = millis();
 
   // Init OLED
-   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if (!display.begin(SSD1306_SWITCHCAPVCC)) {
     Serial.println(F("SSD1306 allocation failed"));
     for (;;); // Don't proceed, loop forever
@@ -211,8 +223,11 @@ void loop()
   }
 
   distance = distance / (float)n;       // Az analóg 0 csatornán mért érték (bit)
-  Serial.println(distance);         // print measured value
+  Serial.println(distance);             // print measured value
 
+  percentage = 100.0-distance/BIN_SIZE*100.0;
+  Serial.println(percentage);           // print measured value
+  
   String displayString = "Tavolsag: " + String(distance) + " cm";
   Serial.println(displayString);
   
@@ -220,8 +235,8 @@ void loop()
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
-
   display.println(displayString);
+  drawProgressbar(0,40,120,10,percentage);
   display.display();
   
   if (hasWifi)
@@ -233,7 +248,7 @@ void loop()
       char messagePayload[MESSAGE_MAX_LEN];
       //float temperature = (float)random(0,50);
       //float humidity = (float)random(0, 1000)/10;
-      snprintf(messagePayload,MESSAGE_MAX_LEN, messageData, DEVICE_ID, messageCount++, distance);
+      snprintf(messagePayload,MESSAGE_MAX_LEN, messageData, DEVICE_ID, messageCount++, distance, percentage);
       Serial.println(messagePayload);
       EVENT_INSTANCE* message = Esp32MQTTClient_Event_Generate(messagePayload, MESSAGE);
       Esp32MQTTClient_Event_AddProp(message, "temperatureAlert", "true");
