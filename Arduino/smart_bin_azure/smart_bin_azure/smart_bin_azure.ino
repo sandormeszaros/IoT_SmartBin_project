@@ -53,6 +53,8 @@ static int n = 50;      // Samples
 float distance = 0;
 float percentage = 0;
 
+String date = "No date selected";
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utilities
 static void InitWifi()
@@ -81,6 +83,8 @@ static void MessageCallback(const char* payLoad, int size)
 {
   Serial.println("Message callback:");
   Serial.println(payLoad);
+  date = String(payLoad).substring(4, 16);
+  Serial.println(date);
 }
 
 static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsigned char *payLoad, int size)
@@ -224,26 +228,22 @@ void loop()
 
   distance = distance / (float)n;       // Az analóg 0 csatornán mért érték (bit)
   Serial.println(distance);             // print measured value
-
-  if (distance>BIN_SIZE)
-  {
-    
-  }
   
   percentage = 100.0-distance/BIN_SIZE*100.0;
   if (percentage > 100) percentage = 100.0; 
   if (percentage < 0) percentage = 0.0;
   Serial.println(percentage);           // print measured value
   
-  String displayString = "Distance: " + String(distance) + " cm";
+  // String displayString = "Distance: " + String(distance) + " cm";
   String displayString2 = String(percentage) + "%";
-  Serial.println(displayString);
+  //Serial.println(displayString);
   
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
-  display.println(displayString);
+  //display.println(displayString);
+  display.println(date);
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(30, 25);

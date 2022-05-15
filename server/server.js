@@ -19,6 +19,15 @@ const io = socketio(server);
 
 const client = Client.fromConnectionString(iotHubConnectionString);
 
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+app.use(cors());
+app.use(router);
+
 function printResultFor(op) {
     return function printResult(err, res) {
         if (err) {
@@ -37,15 +46,15 @@ io.sockets.on('connection', (socket) => {
     })
 })
 
-router.get('/c2d/:id', (req, res) => {
+router.get('/c2d/:date', (req, res) => {
     client.open(function (err) {
         if (err) {
             console.error('Could not connect: ' + err.message);
             res.send('Not OK!')
         } else {
             console.log('Client connected');
-            let data;
-            switch (req.params.id) {
+            let data = req.params.date;
+            /*switch (req.params.date) {
                 case '1':
                     // TODO Implement your own message
                     data = "Message One";
@@ -56,9 +65,10 @@ router.get('/c2d/:id', (req, res) => {
                 default:
                     data = "No message";
                     break;
-            }
+            }*/
             const message = new Message(data);
             console.log('Sending message: ' + message.getData());
+            console.log(req.params.date);
             client.send(targetDevice, message, printResultFor('send'));
             res.send('OK!')
         }
@@ -69,10 +79,6 @@ router.get('*', (req, res) => {
     res.send('Server is running');
 });
 
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
-app.use(cors());
-app.use(router);
 server.listen(PORT, () => console.log('Server is running on port', PORT));
 
 function sendData(socket) {

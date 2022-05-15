@@ -27,7 +27,7 @@ const Dashboard = () => {
 
     return <div>
         <h1 className="title">Smart Bin Dashboard</h1>
-         
+        <C2DMessage/>
         <div className="card-container">
             <Card name="Distance" icon="fas fa-trash fa-2x" value={distance}/>
         </div>

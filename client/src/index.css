@@ -126,13 +126,27 @@ code {
     flex-direction: row;
 }
 
+.datepicker {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin:auto;
+}
+
+.center {
+    margin: auto;
+    width: 12%;
+    padding: 10px;
+}
+
 .c2d-container button {
     outline: none;
     margin: 10px;
     background-color: blue;
     color: white;
     padding: 10px;
-    width: 100px;
+    width: 200px;
     font-size: 18px;
     border-radius: 15px;
 }
