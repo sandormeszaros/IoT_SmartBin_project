@@ -28,7 +28,7 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
                          OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS); 
 
-#define BIN_SIZE 100     // Size of bin in cm   
+#define BIN_SIZE 20     // Size of bin in cm   
 
 /*** Global variables ***/
 // Please input the SSID and password of WiFi
